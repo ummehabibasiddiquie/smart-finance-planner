@@ -1,4 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Smart Finance Planner
+
+Plan Loans. Optimize EMIs. Build Wealth.
+
+Production-ready personal finance, loan planning & wealth management platform built with:
+- Next.js 15 (App Router) + TypeScript
+- Tailwind CSS + shadcn/ui-style components
+- Zustand (LocalStorage persistence)
+- React Hook Form + Zod validation
+- Recharts + TanStack Table
+- Export: XLSX + jsPDF
+
+## Folder Structure (high level)
+
+```
+src/
+  app/
+    (app)/
+      dashboard/
+      loan-calculator/
+      loan-comparison/
+      emi-growth-planner/
+      prepayment-planner/
+      amortization-schedule/
+      affordability-calculator/
+      rent-vs-buy/
+      family-contribution-planner/
+      goal-planner/
+      investment-planner/
+      scenario-comparison/
+      financial-insights/
+      reports/
+      settings/
+    globals.css
+    layout.tsx
+    providers.tsx
+  components/
+    charts/
+    layout/
+    ui/
+  config/
+  hooks/
+  lib/
+    finance/
+    export/
+  store/
+```
+
+## Installation
+
+```bash
+npm install
+```
+
+## Run (Dev)
+
+```bash
+npm run dev
+```
+
+Open http://localhost:3000
+
+## Build
+
+```bash
+npm run build
+npm run start
+```
+
+## Environment Variables
+
+No environment variables are required. All persistence is handled via Local Storage.
+
+## Deployment (Vercel)
+
+1. Push this repository to GitHub/GitLab/Bitbucket.
+2. In Vercel: **New Project** → import the repo.
+3. Framework preset: **Next.js** (auto-detected).
+4. Build command: `npm run build` (default)
+5. Output: handled automatically by Next.js.
+6. Deploy.
+
+## Notes
+- Exports (PDF/Excel) run client-side in the browser.
+- Financial calculations are deterministic utilities in `src/lib/finance`.
 
 ## Getting Started
 
