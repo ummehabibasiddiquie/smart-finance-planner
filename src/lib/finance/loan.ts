@@ -103,13 +103,50 @@ export function generateAmortizationSchedule(input: {
     const bonus = bonuses.find((b) => b.monthIndex === month);
     if (bonus) extraPayment += bonus.amount;
 
-    // once per year: at end of each year (month 11, 23, 35...) add annual lump sum
-    if (annualLumpSum > 0 && (month + 1) % 12 === 0) extraPayment += annualLumpSum;
-
-    // extra EMI payments per year: spread evenly across year (first N months of each year)
-    if (extraEmisPerYear > 0) {
+    // lump sum payment: apply based on frequency
+    if (annualLumpSum > 0) {
+      const frequency = prepayment?.frequency;
       const withinYear = month % 12; // 0..11
-      if (withinYear < extraEmisPerYear) extraPayment += dynamicEmi;
+      
+      if (frequency === "monthly") {
+        // Every month: apply full amount
+        extraPayment += annualLumpSum;
+      } else if (frequency === "quarterly") {
+        // Every 3 months (months 2, 5, 8, 11): apply full amount
+        if (withinYear % 3 === 2) extraPayment += annualLumpSum;
+      } else if (frequency === "half-yearly") {
+        // Every 6 months (months 5, 11): apply full amount
+        if (withinYear % 6 === 5) extraPayment += annualLumpSum;
+      } else if (frequency === "yearly") {
+        // Once per year (month 11): apply full amount
+        if (withinYear === 11) extraPayment += annualLumpSum;
+      } else {
+        // Legacy behavior: once per year at end of year
+        if (withinYear === 11) extraPayment += annualLumpSum;
+      }
+    }
+
+    // extra EMI payments per year: apply based on frequency
+    if (extraEmisPerYear > 0) {
+      const frequency = prepayment?.frequency;
+      const withinYear = month % 12; // 0..11
+      
+      if (frequency === "monthly") {
+        // Every month: divide yearly amount by 12
+        extraPayment += dynamicEmi * (extraEmisPerYear / 12);
+      } else if (frequency === "quarterly") {
+        // Every 3 months (months 0, 3, 6, 9): divide yearly amount by 4
+        if (withinYear % 3 === 0) extraPayment += dynamicEmi * (extraEmisPerYear / 4);
+      } else if (frequency === "half-yearly") {
+        // Every 6 months (months 0, 6): divide yearly amount by 2
+        if (withinYear % 6 === 0) extraPayment += dynamicEmi * (extraEmisPerYear / 2);
+      } else if (frequency === "yearly") {
+        // Once per year (month 0): full yearly amount
+        if (withinYear === 0) extraPayment += dynamicEmi * extraEmisPerYear;
+      } else {
+        // Legacy behavior: spread evenly across first N months of each year
+        if (withinYear < extraEmisPerYear) extraPayment += dynamicEmi;
+      }
     }
 
     // Clamp so we don't overpay

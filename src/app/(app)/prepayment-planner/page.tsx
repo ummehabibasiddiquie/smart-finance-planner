@@ -18,6 +18,7 @@ import { BalanceTrend } from "@/components/charts/loan-charts";
 import { NoSSR } from "@/components/no-ssr";
 
 const schema = z.object({
+  frequency: z.enum(["monthly", "quarterly", "half-yearly", "yearly"]).optional(),
   extraEmisPerYear: z.coerce.number().min(0).max(12),
   annualLumpSum: z.coerce.number().min(0),
   bonusMonthIndex: z.coerce.number().min(0).max(600).optional(),
@@ -33,6 +34,7 @@ export default function PrepaymentPlannerPage() {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
+      frequency: scenario.prepayment?.frequency ?? "half-yearly",
       extraEmisPerYear: scenario.prepayment?.extraEmisPerYear ?? 1,
       annualLumpSum: scenario.prepayment?.annualLumpSum ?? 50000,
       bonusMonthIndex: scenario.prepayment?.bonuses?.[0]?.monthIndex ?? 11,
@@ -52,6 +54,7 @@ export default function PrepaymentPlannerPage() {
         : [];
     updateScenario(scenario.id, {
       prepayment: {
+        frequency: values.frequency,
         extraEmisPerYear: values.extraEmisPerYear,
         annualLumpSum: values.annualLumpSum,
         bonuses,
@@ -77,12 +80,22 @@ export default function PrepaymentPlannerPage() {
 
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
               <div className="grid gap-2">
+                <Label>Prepayment Frequency</Label>
+                <select {...form.register("frequency")} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                  <option value="half-yearly">Half-Yearly (Every 6 months)</option>
+                  <option value="yearly">Yearly (Once per year)</option>
+                  <option value="quarterly">Quarterly (Every 3 months)</option>
+                  <option value="monthly">Monthly (Every month)</option>
+                </select>
+              </div>
+              <div className="grid gap-2">
                 <Label>Extra EMI Payments Per Year</Label>
                 <Input type="number" step="1" {...form.register("extraEmisPerYear")} />
               </div>
               <div className="grid gap-2">
-                <Label>Annual Lump Sum (₹)</Label>
+                <Label>Lump Sum Amount (₹)</Label>
                 <Input type="number" step="1000" {...form.register("annualLumpSum")} />
+                <div className="text-xs text-muted-foreground">Applied at selected frequency (e.g., ₹50,000 every 6 months)</div>
               </div>
 
               <div className="grid gap-2">

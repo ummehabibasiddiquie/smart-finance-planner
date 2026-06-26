@@ -12,9 +12,11 @@ export function generateInsights(base: Scenario, alternative?: Scenario) {
     )}.`,
   );
 
-  if ((base.prepayment?.extraEmisPerYear ?? 0) > 0) {
+  if ((base.prepayment?.extraEmisPerYear ?? 0) > 0 || (base.prepayment?.annualLumpSum ?? 0) > 0) {
+    const freq = base.prepayment?.frequency ?? "yearly";
+    const freqText = freq === "half-yearly" ? "every 6 months" : freq === "quarterly" ? "every 3 months" : freq === "monthly" ? "monthly" : "yearly";
     insights.push(
-      `Adding ${base.prepayment!.extraEmisPerYear} extra EMI(s) per year can shorten your loan duration to ~${formatNumber(
+      `Prepayment strategy (${freqText}) can shorten your loan duration to ~${formatNumber(
         baseSummary.months / 12,
         1,
       )} years.`,

@@ -71,7 +71,7 @@ export default function ScenarioComparisonPage() {
                 addScenario({
                   name: v.name,
                   loan: { ...baseLoan, principal: v.principal },
-                  prepayment: { extraEmisPerYear: 0, annualLumpSum: 0, bonuses: [] },
+                  prepayment: { frequency: "half-yearly", extraEmisPerYear: 0, annualLumpSum: 0, bonuses: [] },
                   emiGrowth: { mode: "percent", percentIncrease: 0 },
                 });
                 toast.success("Scenario created");

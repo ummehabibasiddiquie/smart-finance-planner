@@ -14,7 +14,10 @@ export interface LoanInput {
   startDateISO?: string; // defaults today
 }
 
+export type PrepaymentFrequency = "monthly" | "quarterly" | "half-yearly" | "yearly";
+
 export interface PrepaymentPlan {
+  frequency?: PrepaymentFrequency; // when to apply extra EMI payments
   extraEmisPerYear: number; // count of extra full-EMI payments per year
   annualLumpSum: number; // once per year amount
   bonuses: Array<{ monthIndex: number; amount: number }>; // 0-based month index

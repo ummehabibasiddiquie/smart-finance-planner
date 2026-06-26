@@ -57,7 +57,7 @@ const initialState: Pick<AppState, "profile" | "scenarios" | "goals" | "investme
         annualRate: 8.5,
         tenureYears: 20,
       },
-      prepayment: { extraEmisPerYear: 0, annualLumpSum: 0, bonuses: [] },
+      prepayment: { frequency: "half-yearly", extraEmisPerYear: 0, annualLumpSum: 0, bonuses: [] },
       emiGrowth: { mode: "percent", percentIncrease: 0 },
     },
   ],
